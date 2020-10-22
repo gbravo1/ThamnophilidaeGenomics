@@ -59,7 +59,7 @@ make CLAPACKPATH=/n/holyscratch01/edwards_lab/gbravo1/Genomes/03_halPhyloPTrain/
   # The name of the reference genome has to match that included in the *.hal alignment
 
 # This will output three files:
-# a. antbirds_all.mod: Background rate based on 4dsites. This file contains the transition matrix and the trix with adjusted branch lengths
+# a. antbirds_all_corrected.mod: Background rate based on 4dsites. This file contains the transition matrix and the trix with adjusted branch lengths
 # b. galGal6.4ds.bed: Bed file conatining coordinates for 4dsites #I manually renamed this file afterward
 # c. allmod.err: Log file
 
@@ -72,5 +72,5 @@ python /usr/local/lib/python2.7/site-packages/hal/phyloP/halPhyloPTrain.py \
 --tree "(Gallus_v6:0.098646,(Taenopygia_v1:0.066932,((R_hoffmansi:0.0053487,R_melanosticta:0.0053487):0.02183075,((S_canadensis:0.00662865,S_luctuosus:0.00662865):0.0122772,((T_doliatus:0.01124635,T_ruficapillus:0.01124635):0.00454325,(T_caerulescens:0.01415755,((T_bernardi:0.00158483,T_shumbae:0.00158483):0.00845627,(T_atrinucha:0.00778095,T_bridgesi:0.00778095):0.00226015):0.00411645):0.00163205):0.00311625):0.0082736):0.03975255):0.031714);" \
 --targetGenomes Gallus_v6 Taenopygia_v1 R_hoffmansi R_melanosticta S_canadensis S_luctuosus T_doliatus T_ruficapillus T_caerulescens T_bernardi T_shumbae T_atrinucha T_bridgesi \
 --precision HIGH \
-../01_cactus/GenomesThamnos.hal Gallus_v6 galGal6.cds.bed antbirds_all.mod 2> allmod.err
+../01_cactus/GenomesThamnos.hal Gallus_v6 galGal6.cds.bed antbirds_all_corrected.mod 2> allmod.err
 
