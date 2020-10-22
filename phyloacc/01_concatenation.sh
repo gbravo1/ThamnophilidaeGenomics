@@ -41,3 +41,10 @@ catsequences/catsequences list_loci_no_missing_data.txt
 #renaming output files 
 mv allseqs.fas cnee_nomissing.fa
 mv allseqs.partitions.txt cnee_nomissing.partitions.txt
+
+# cleaning up ?s from fasta alignment
+module load perl
+cat cnee_nomissing.fa | perl -p -e 's/[?]/-/g' > cnee_nomissing_gapFixed.fa
+
+# Converting partition file from *.txt into a *.bed with thre columns: CNEE-start-end. PhyloAcc only takes in beds.
+sed 's/\.\/batch*_output\///g' cnee_nomissing.partitions.txt | awk 'BEGIN{FS="="; OFS="\t"} {split($2,a,"-"); print $1,a[1],a[2]}' | sed 's/;$//' | sed 's/\.aligned\.fa//g' | awk 'BEGIN{OFS="\t"} {print $1, $2-1, $3}' > cnee_nomissing.part.bed
