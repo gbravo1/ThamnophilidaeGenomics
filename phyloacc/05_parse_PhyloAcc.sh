@@ -33,12 +33,14 @@ cat elem_lik.header parsed_results/genome_location_combined_elem_lik.temp > pars
 cat rate_postZ_M2.header parsed_results/genome_location_combined_postZ_M2.temp >  parsed_results/genome_location_combined_postZ_M2.txt
 
 # To maintain the CNEE name without its path in a single column, I am removing the path from the name of each CNEE. This is helpful for downstream data wrangling in R.
+
 sed -i -e 's/\.\/batch[0-9][0-9][0-9]_output\///g' parsed_results/genome_location_combined_elem_lik.txt
 
-# Get rid of temporary files.
+# Getting rid of temporary files.
+
 rm parsed_results/*.temp
 
-## 3, Copying necessary files for parsing results in R.
+## 3. Copying necessary files for parsing results in R.
 
 # Tree files and species names. This is necessary because for some reason treeData needs these files to be in the same directory as parsed_results. It doesn't work if called from their original location when in R.
 cp input_data/antbirds_all_corrected.mod parsed_results/
@@ -51,3 +53,4 @@ cp ../06_1_phyloacc/parsed_results/scientific_names.txt parsed_results/ #previou
 cp ../06_1_phyloacc/parsed_results/galGal6_final_merged_CNEEs_named.bed parsed_results/ #bed file with CNEE information on Gallus v6 genome
 cp ../06_1_phyloacc/parsed_results/galGal6.ALL.bed parsed_results/ #bed file of chicken annotations
 cp ../06_1_phyloacc/parsed_results/chicken_chr_dictionary.txt parsed_results/ #dictionary for chicken chromosome names
+
