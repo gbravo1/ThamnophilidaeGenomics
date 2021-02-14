@@ -9,5 +9,5 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=gustavo_bravo@fas.harvard.edu
 
-source /n/holyscratch01/edwards_lab/gbravo/Genomes/06_phyloacc/03_setupPhyloAcc.sh
+source /n/holyscratch01/edwards_lab/gbravo/Genomes/06_5_phyloacc/03_setupPhyloAcc.sh
 ./PhyloAcc parameters/run${SLURM_ARRAY_TASK_ID}
