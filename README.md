@@ -11,5 +11,5 @@ This repository will broadly contain scripts used for the following analyses. As
   5. Creation of track hubs for the USCS Genome Browser (TBA)
   6. Detection of conserved regions in antbirds (TBA)
   7. Analysis of acceleration of Conserved Non-Exonic Regions (CNEEs) using PhyloAcc
-  8. Analysis of protein-coding regions
+  8. Analysis of protein-coding regions (TBA)
   
