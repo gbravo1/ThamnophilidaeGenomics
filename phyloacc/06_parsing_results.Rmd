@@ -46,7 +46,7 @@ pre { /* Code block - determines code spacing between lines */
 }
 </style>
 
-## This is a script to parse results from a PhyloAcc run. It uses parsed and copied files by 05_parse_PhyloAcc.sh
+## This is a script to parse results from PhyloAcc. It uses parsed and copied files by 05_parse_PhyloAcc.sh
 
 # 1. Setting working directory and loading packages:
 
@@ -95,7 +95,6 @@ hist(postaccantbirds_complete$n_rate, breaks =100)
 hist(postaccantbirds_complete$c_rate)
 ```
 
-
 # 6. Filtering out elements with conservation rate greater than 0.6 (c_rate > 0.6)
 
 ```{r, message=FALSE, warning = FALSE}
@@ -128,7 +127,6 @@ cnees_labeled <- cneeantbirds_complete %>% mutate(Accel_10_0 = bf1 > 10, Spec_10
 table(cnees_labeled$Spec_10_0)["TRUE"]
 table(cnees_labeled$Spec_20_0)["TRUE"]
 ```
-
 
 # 9. Selecting Top Accelerating CNEEs
 
