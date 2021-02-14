@@ -1,0 +1,143 @@
+---
+title: "Parsing PhyloAcc - Genomes by Origin"
+author: "G. Bravo"
+date: "02/14/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
+
+`<style type="text/css">
+
+body{ /* Normal  */
+      font-size: 14px;
+  }
+td {  /* Table  */
+  font-size: 10px;
+}
+h1.title {
+  font-size: 22px;
+  color: DarkBlue;
+  font-family: Arial, Helvetica, sans-serif;
+}
+h1 { /* Header 1 */
+  font-size: 18px;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+}
+h2 { /* Header 2 */
+  font-size: 16px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-style: oblique;
+}
+h3 { /* Header 3 */
+  font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-style: oblique;
+}
+code.r{ /* Code block */
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-stretch: expanded;
+}
+pre { /* Code block - determines code spacing between lines */
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+</style>
+
+## This is a script to parse results from a PhyloAcc run. It uses parsed and copied files by 05_parse_PhyloAcc.sh
+
+# 1. Setting working directory and loading packages:
+
+```{r message=FALSE, warning=FALSE}
+setwd("/n/holyscratch01/edwards_lab/gbravo/Genomes/06_5_phyloacc/parsed_results")
+library(tidyverse, lib.loc = "/usr/local/lib/R/site-library")
+library(ggthemes)
+library(GGMM)
+library(seqinr)
+library(gridExtra)
+```
+
+# 2. Source PhyloAcc functions. These were created by PhyloAcc developers and can be retrieved from their github:
+
+```{r init, include= FALSE}
+source("drawAlign_function.R")
+```
+
+# 3. Read in the tree and associated files necessary to run functions in drawAlign_function.R:
+
+```{r treeData, cache=F}
+#antbirds_all_corrected.mod and batch000_species_names.txt copied from input_data and outputs beforehand.
+#scientific_names.txt was created in advance via nano or copied beforehand from a previous run.
+treeData <- prepare_data(tree_path = "antbirds_all_corrected.mod", species_name = "batch000_species_names.txt", common_name = "scientific_names.txt")
+treeData$tip <- treeData$tree$tip.label
+```
+
+# 4. Read in the likelihood and posterior probability information.
+
+```{r, message=FALSE, warning = FALSE}
+likantbirds_complete <- read_tsv("genome_location_combined_elem_lik.txt", col_names = c("key", "cnee", "loglik.null", "loglik.target", "loglik.full", "logBF1", "logBF2", "loglik_Max_M0", "loglik_Max_M1", "loglik_Max_M2")) %>%
+  arrange(loglik.full) %>%
+  distinct(cnee, .keep_all = T) %>%
+  mutate(bf1 = as.numeric(loglik.target) - as.numeric(loglik.null), bf2 = as.numeric(loglik.target) - as.numeric(loglik.full)) %>%
+  mutate(key = as.numeric(key))
+
+zpostantbirds_complete <- read_tsv("genome_location_combined_postZ_M2.txt", col_types = cols(.default = "d"))
+postaccantbirds_complete <- zpostantbirds_complete %>% rename(key = No.) # Renaming column so both tables can talk to each other using "key."
+
+```
+
+# 5. Plotting the distribution of acceleration (n_rate) and conservation (c_rate).
+
+```{r, message=FALSE, warning = FALSE}
+hist(postaccantbirds_complete$n_rate, breaks =100)
+hist(postaccantbirds_complete$c_rate)
+```
+
+
+# 6. Filtering out elements with conservation rate greater than 0.6 (c_rate > 0.6)
+
+```{r, message=FALSE, warning = FALSE}
+cneeantbirds_complete <- inner_join(postaccantbirds_complete, likantbirds_complete, by = c("key" = "key")) %>%
+  filter(c_rate <= 0.60)
+```
+
+# 7. Adding CNEE names from bed file info & reading the alignment
+
+```{r, message=FALSE, warning = FALSE}
+#galGal_final_merged_CNEEs_named.bed comes from folder of CNEE alignments
+cneeBED <- read_tsv("galGal6_final_merged_CNEEs_named.bed", col_names = c("chr", "start", "end", "cnee"))
+cneeantbirds_complete <- inner_join(cneeantbirds_complete, cneeBED, by = c("cnee" = "cnee"))
+
+bed <- read.delim("../input_data/cnee_nomissing.part.bed", header=F)
+fasta <- read.alignment(file = "../input_data/cnee_nomissing_gapFixed.fa", format = "fasta")  
+align <- as.matrix(fasta)
+align <- align[treeData$tree$tip.label,]  # reorder species in the alignment to be the same as tips of the tree. The name of the species in the alignment file has to the same as in the tree!
+```
+
+# 8. Labeling CNEEs that are accelerated according to different values of log-BF1 and log-BF2
+
+```{r, message=FALSE, warning = FALSE}
+# Evidence for acceleration: log-BF1 > 10 & log-BF2 > 0
+# Overly conservative evidence for acceleration: log-BF1 > 20 & log-BF2 > 0
+
+cnees_labeled <- cneeantbirds_complete %>% mutate(Accel_10_0 = bf1 > 10, Spec_10_0 = bf1 > 10 & bf2 > 0) %>% 
+  mutate(Accel_20_0 = bf1 > 20, Spec_20_0 = bf1 > 20 & bf2 > 0)
+
+table(cnees_labeled$Spec_10_0)["TRUE"]
+table(cnees_labeled$Spec_20_0)["TRUE"]
+```
+
+
+# 9. Selecting Top Accelerating CNEEs
+
+```{r, message=FALSE, warning = FALSE}
+bf.1_10_0 <- cnees_labeled %>%
+  filter(Spec_10_0 == T) %>%
+  arrange(chr,start)
+
+topZ_CNEE <- bf.1_10_0 %>% select(chr,start,end,cnee)
+write.table(topZ_CNEE, "topZ_CNEEs.txt", sep="\t", quote = FALSE, row.names = FALSE)
+```
+
