@@ -39,7 +39,7 @@ split -d -a 3 -l 2000 batches/full_list batches/batch
 
 ### 4. Setting up up parameter files
 # Creating directory to store parameter files. Each batch will have its own parameter file
-# In this file run, target species were defined based on the origin of individual genomes:
+# In this file, target species were defined based on the precipitation of the driest quarter at the locality where specimens used to generate genomes were obtained:
 
 # Species, Lat, Long, Habitat, bio17 (mm)
 # Thamnophilus_bernardi, -3.743056, -80.714722, dry, 0 
