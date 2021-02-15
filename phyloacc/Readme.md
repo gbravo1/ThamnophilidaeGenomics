@@ -1,6 +1,6 @@
-### These scripts to run PhyloAcc (https://doi.org/10.1093/molbev/msz049) were writtten largely based on those made available by Zhirou Hu (https://github.com/xyz111131/PhyloAcc) and Sara Wuitchick (https://github.com/sjswuitchik/duck_comp_gen).
+###3 These scripts to run PhyloAcc (https://doi.org/10.1093/molbev/msz049) were writtten largely based on those made available by Zhirou Hu (https://github.com/xyz111131/PhyloAcc) and Sara Wuitchick (https://github.com/sjswuitchik/duck_comp_gen).
 
-#### How target species were defined to run PhyloAcc?
+#### *How target species were defined to run PhyloAcc?*
 
 Dry habitats rather represent one extreme in a contunium from humid/forested to dry/open environments. Therefore, species may occur along different portions of such continuum, some being more prone to occur in dryier regions than others. Defining a binary variable of dry vs humid is not straightforward.
 
