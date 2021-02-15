@@ -1,6 +1,6 @@
 # Comparative Analyses of a Whole-genome Alignment of Antbirds (Thamnophilidae)
 ### Work in progress.
-##### G. A. Bravo & S. V. Edwards
+##### G. A. Bravo (gustavo_bravo@fas.harvard.edu) & S. V. Edwards (sedwards@fas.harvard.edu). Harvard University.
 #
 This repository will broadly contain scripts used for the following analyses. As scripts are uploaded, these categories may change or be redefined.
 
