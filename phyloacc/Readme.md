@@ -2,7 +2,7 @@
 
 ### *How target species were defined to run PhyloAcc?*
 
-Dry habitats rather represent one extreme in a contunium from humid/forested to dry/open environments. Therefore, species may occur along different portions of such continuum, some being more prone to occur in dryier regions than others. Defining a binary variable of dry vs humid is not straightforward.
+Dry habitats represent an extreme in a contunium from humid/forested to dry/open environments. Therefore, species may occur along different portions of such continuum, some being more prone to occur in dryier regions than others. Defining a binary variable of dry vs humid is not straightforward.
 
 Therefore, **three different** strategies were used to run PhyloAcc:
 
