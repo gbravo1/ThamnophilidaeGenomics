@@ -20,4 +20,4 @@ Therefore, **three different** strategies were used to run PhyloAcc:
 
 Outputs of these analyses were processed independently to then define elements accelarated in all analyses. 
 
-### **The scripts contained herein are suited for the first strategy.** 
+#### **The scripts contained herein are suited for the first strategy.** 
