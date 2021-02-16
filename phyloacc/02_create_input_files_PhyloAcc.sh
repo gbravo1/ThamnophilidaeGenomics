@@ -20,7 +20,7 @@ cd input_data
 #Adjust paths when necessary. These were obtained from a test run.
 cp ../../06_1_phyloacc/input_data/cnee_nomissing_gapFixed.fa . # output of script 01_concatenation.sh
 cp ../../06_1_phyloacc/input_data/cnee_nomissing.part.bed . # output of script 01_concatenation.sh
-cp ../../06_1_phyloacc/input_data/antbirds_all_corrected.mod . # this files comes from running halTreePhyloP on the hal whole-genome alignment
+cp ../../06_1_phyloacc/input_data/antbirds_all_corrected.mod . # this file comes from running halTreePhyloP on the hal whole-genome alignment
 cd ..
 
 ### 3. Setting up batches of 2000 elements each to run PhyloAcc on each in an array. Each batch will contain randomenly selected CNEEs
