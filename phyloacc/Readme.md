@@ -1,4 +1,4 @@
-#### These scripts to run PhyloAcc (https://doi.org/10.1093/molbev/msz049) were writtten largely based on those made available by Zhirou Hu (https://github.com/xyz111131/PhyloAcc) and Sara Wuitchick (https://github.com/sjswuitchik/duck_comp_gen).
+#### These scripts to run PhyloAcc (https://doi.org/10.1093/molbev/msz049) were written guided by those made available by Zhirou Hu (https://github.com/xyz111131/PhyloAcc) and Sara Wuitchick (https://github.com/sjswuitchik/duck_comp_gen).
 
 ### *How target species were defined to run PhyloAcc?*
 
