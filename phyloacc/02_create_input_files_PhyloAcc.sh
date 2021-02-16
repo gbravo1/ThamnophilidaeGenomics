@@ -18,6 +18,7 @@ cd input_data
 
 ### 2. Copying input data 
 #Adjust paths when necessary. These were obtained from a test run.
+cp ../../06_1_phyloacc/PhyloAcc . # Executable for PhyloAcc
 cp ../../06_1_phyloacc/input_data/cnee_nomissing_gapFixed.fa . # output of script 01_concatenation.sh
 cp ../../06_1_phyloacc/input_data/cnee_nomissing.part.bed . # output of script 01_concatenation.sh
 cp ../../06_1_phyloacc/input_data/antbirds_all_corrected.mod . # this file comes from running halTreePhyloP on the hal whole-genome alignment
