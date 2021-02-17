@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: inline
 ---
 
-`<style type="text/css">
+<style type="text/css">
 
 body{ /* Normal  */
       font-size: 14px;
