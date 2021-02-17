@@ -103,7 +103,7 @@ cneeantbirds_complete <- inner_join(postaccantbirds_complete, likantbirds_comple
   filter(c_rate <= 0.60)
 ```
 
-# 7. Adding CNEE names from bed file info & reading the alignment
+# 7. Adding CNEE names from bed file info
 
 ```{r, message=FALSE, warning = FALSE}
 #galGal_final_merged_CNEEs_named.bed comes from folder of CNEE alignments
