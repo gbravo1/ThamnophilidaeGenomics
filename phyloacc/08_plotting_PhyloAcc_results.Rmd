@@ -68,6 +68,7 @@ chr_dictionary<- as_tibble(read.table("chicken_chr_dictionary.txt", header = T))
 #Reading parsed fixed bed containing cnee info
 closest_genes <- as_tibble(read_tsv("closest_CDS_parsed.fixed.bed"))
 megadata <- full_join(closest_genes,bf.1_10_0, by ="cnee") %>% full_join(chr_dictionary,., by = "chr_gallus_bed")
+write.table(megadata, "genome_location_megadata.txt", sep="\t", quote = FALSE, row.names = FALSE)
 ```
 
 # 3. Plotting individual trees of accelerated CNEEs with bracnhes scaled by acceleration rates.
