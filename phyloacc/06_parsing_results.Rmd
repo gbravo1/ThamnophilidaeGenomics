@@ -1,7 +1,7 @@
 ---
 title: "Parsing PhyloAcc - Genomes by Origin"
 author: "G. Bravo"
-date: "02/14/2021"
+date: "02/16/2021"
 output: html_document
 editor_options: 
   chunk_output_type: inline
@@ -46,7 +46,7 @@ pre { /* Code block - determines code spacing between lines */
 }
 </style>
 
-## This is a script to parse results from PhyloAcc. It uses parsed and copied files by 05_parse_PhyloAcc.sh
+## This is a script to parse results from a PhyloAcc run. It uses parsed and copied files by 05_parse_PhyloAcc.sh
 
 # 1. Setting working directory and loading packages:
 
@@ -95,6 +95,7 @@ hist(postaccantbirds_complete$n_rate, breaks =100)
 hist(postaccantbirds_complete$c_rate)
 ```
 
+
 # 6. Filtering out elements with conservation rate greater than 0.6 (c_rate > 0.6)
 
 ```{r, message=FALSE, warning = FALSE}
@@ -108,11 +109,6 @@ cneeantbirds_complete <- inner_join(postaccantbirds_complete, likantbirds_comple
 #galGal_final_merged_CNEEs_named.bed comes from folder of CNEE alignments
 cneeBED <- read_tsv("galGal6_final_merged_CNEEs_named.bed", col_names = c("chr", "start", "end", "cnee"))
 cneeantbirds_complete <- inner_join(cneeantbirds_complete, cneeBED, by = c("cnee" = "cnee"))
-
-bed <- read.delim("../input_data/cnee_nomissing.part.bed", header=F)
-fasta <- read.alignment(file = "../input_data/cnee_nomissing_gapFixed.fa", format = "fasta")  
-align <- as.matrix(fasta)
-align <- align[treeData$tree$tip.label,]  # reorder species in the alignment to be the same as tips of the tree. The name of the species in the alignment file has to the same as in the tree!
 ```
 
 # 8. Labeling CNEEs that are accelerated according to different values of log-BF1 and log-BF2
@@ -121,18 +117,19 @@ align <- align[treeData$tree$tip.label,]  # reorder species in the alignment to 
 # Evidence for acceleration: log-BF1 > 10 & log-BF2 > 0
 # Overly conservative evidence for acceleration: log-BF1 > 20 & log-BF2 > 0
 
-cnees_labeled <- cneeantbirds_complete %>% mutate(Accel_10_0 = bf1 > 10, Spec_10_0 = bf1 > 10 & bf2 > 0) %>% 
-  mutate(Accel_20_0 = bf1 > 20, Spec_20_0 = bf1 > 20 & bf2 > 0)
+cnees_labeled_10_0 <- cneeantbirds_complete %>% mutate(Accel = bf1 > 10, Spec = bf1 > 10 & bf2 > 0) 
+cnees_labeled_20_0 <- cneeantbirds_complete %>% mutate(Accel = bf1 > 20, Spec = bf1 > 20 & bf2 > 0)
 
-table(cnees_labeled$Spec_10_0)["TRUE"]
-table(cnees_labeled$Spec_20_0)["TRUE"]
+table(cnees_labeled_10_0$Spec)["TRUE"]
+table(cnees_labeled_20_0$Spec)["TRUE"]
 ```
+
 
 # 9. Selecting Top Accelerating CNEEs
 
 ```{r, message=FALSE, warning = FALSE}
-bf.1_10_0 <- cnees_labeled %>%
-  filter(Spec_10_0 == T) %>%
+bf.1_10_0 <- cnees_labeled_10_0 %>%
+  filter(Spec == T) %>%
   arrange(chr,start)
 write.table(bf.1_10_0, "bf.1_10_0.txt", sep="\t", quote = FALSE, row.names = FALSE)
 
