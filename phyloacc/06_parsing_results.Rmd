@@ -134,6 +134,7 @@ table(cnees_labeled$Spec_20_0)["TRUE"]
 bf.1_10_0 <- cnees_labeled %>%
   filter(Spec_10_0 == T) %>%
   arrange(chr,start)
+write.table(bf.1_10_0, "bf.1_10_0.txt", sep="\t", quote = FALSE, row.names = FALSE)
 
 topZ_CNEE <- bf.1_10_0 %>% select(chr,start,end,cnee)
 write.table(topZ_CNEE, "topZ_CNEEs.txt", sep="\t", quote = FALSE, row.names = FALSE)
