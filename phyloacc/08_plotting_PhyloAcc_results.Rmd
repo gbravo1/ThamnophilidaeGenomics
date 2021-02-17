@@ -8,7 +8,6 @@ editor_options:
 ---
 
 `<style type="text/css">
-
 body{ /* Normal  */
       font-size: 14px;
   }
@@ -58,30 +57,46 @@ library(GGMM)
 library(seqinr)
 library(gridExtra)
 ```
+# 2. Source PhyloAcc functions. These were created by PhyloAcc developers and can be retrieved from their github:
 
-# 2. Reading results from 07_bedtools_closest.sh. This file was also manually cleaned up in BBEdit/Excel.
+```{r init, include= FALSE}
+source("drawAlign_function.R")
+```
+
+# 3. Read in the tree and associated files necessary to run functions in drawAlign_function.R:
+
+```{r treeData, cache=F}
+#antbirds_all_corrected.mod and batch000_species_names.txt copied from input_data and outputs beforehand.
+#scientific_names.txt was created in advance via nano or copied beforehand from a previous run.
+treeData <- prepare_data(tree_path = "antbirds_all_corrected.mod", species_name = "batch000_species_names.txt", common_name = "scientific_names.txt")
+treeData$tip <- treeData$tree$tip.label
+```
+
+# 4. Reading results from 07_bedtools_closest.sh. This file was also manually cleaned up in BBEdit/Excel.
 
 ```{r, message=FALSE, warning = FALSE}
 #Reading chicken chromosome dictionary. This was created before hand.
 chr_dictionary<- as_tibble(read.table("chicken_chr_dictionary.txt", header = T))
-
 #Reading parsed fixed bed containing cnee info
 closest_genes <- as_tibble(read_tsv("closest_CDS_parsed.fixed.bed"))
+bf.1_10_0 <- as_tibble(read_tsv("bf.1_10_0.txt"))
 megadata <- full_join(closest_genes,bf.1_10_0, by ="cnee") %>% full_join(chr_dictionary,., by = "chr_gallus_bed")
 write.table(megadata, "genome_location_megadata.txt", sep="\t", quote = FALSE, row.names = FALSE)
 ```
 
-# 3. Plotting individual trees of accelerated CNEEs with bracnhes scaled by acceleration rates.
+# 5. Plotting individual trees of accelerated CNEEs with bracnhes scaled by acceleration rates.
 
 ```{r, message=FALSE, warning = FALSE}
-
 targets = c("S_canadensis","T_bernardi","T_caerulescens", "T_ruficapillus", "T_doliatus")
-
 gene_cnee <- closest_genes %>% select(gene,cnee) %>% distinct(gene,cnee)
 write.table(gene_cnee, "accelerated_genes_cnees_for_websgeltat.txt")
-
 sorted.bf.1_10_0 <- bf.1_10_0 %>% arrange(logBF1) %>% left_join(., gene_cnee, by = "cnee")
   
+bed <- read.delim("../input_data/cnee_nomissing.part.bed", header=F)
+fasta <- read.alignment(file = "../input_data/cnee_nomissing_gapFixed.fa", format = "fasta")  
+align <- as.matrix(fasta)
+align <- align[treeData$tree$tip.label,]  # reorder species in the alignment to be the same as tips of the tree. The name of the species in the alignment file has to the same as in the tree!
+
 pdf("cnees_trees.by.rate.pdf")
 for (i in 1:nrow(sorted.bf.1_10_0))
 {
@@ -94,7 +109,7 @@ for (i in 1:nrow(sorted.bf.1_10_0))
 dev.off()
 ```
 
-## 4. Plotting a summary tree with branches color-coded by posterior probabilities of accelerated CNEEs.
+## 6. Plotting a summary tree with branches color-coded by posterior probabilities of accelerated CNEEs.
 
 ```{r, message=FALSE, warning = FALSE}
 topZ <- sorted.bf.1_10_0 %>% select(contains("_3"))
@@ -102,12 +117,11 @@ plotZPost_all(treeData, topZ, targets)
 ```
 
 
-# 5. Plotting the number of accelerated CNEEs in each Gallus chromosome.
+# 7. Plotting the number of accelerated CNEEs in each Gallus chromosome.
 
 #Tally them by chicken chromosome
 ```{r, message=FALSE, warning = FALSE}
 tally_by_chromosome <- megadata %>% group_by(chr_gallus_nr) %>% summarise(cnee.by.chr = n_distinct(cnee)) %>% arrange(desc(cnee.by.chr))
-
 tally <- ggplot(tally_by_chromosome, aes(x = reorder(chr_gallus_nr,cnee.by.chr), y = cnee.by.chr)) +
   geom_col(fill = "#E69F00") + 
   coord_flip() + 
@@ -118,15 +132,12 @@ tally <- ggplot(tally_by_chromosome, aes(x = reorder(chr_gallus_nr,cnee.by.chr),
 tally
 ```
 
-# 6. Densities of acceleration and conservation rates in target species.
+# 8. Densities of acceleration and conservation rates in target species.
 
 ```{r, message=FALSE, warning = FALSE}
 acc_rate.by.gene <- megadata %>% select(S_canadensis_3, T_bernardi_3, T_ruficapillus_3, T_caerulescens_3, T_doliatus_3, gene,n_rate) %>% group_by(.,gene) %>% summarize(mean_acc_rate = mean(n_rate))
-
 cons_rate.by.gene <- megadata %>% select(R_hoffmansi_3, R_melanosticta_3, S_luctuosus_3, T_atrinucha_3, T_bridgesi_3, T_shumbae_3, gene, c_rate) %>% group_by(.,gene) %>% summarize(mean_cons_rate = mean(c_rate))
-
 rates_densities <- full_join(acc_rate.by.gene,cons_rate.by.gene, by = "gene") %>% gather("type","rate",2:3)
-
 rate_density_plot <- ggplot(rates_densities, aes(x=rate)) +
   geom_density(aes(group=type, fill=type)) +
   scale_color_manual(values=c("#E69F00", "#56B4E9")) +
